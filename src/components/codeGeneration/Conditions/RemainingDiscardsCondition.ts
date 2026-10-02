@@ -4,10 +4,11 @@ import { generateOperationCode } from "../lib/operationUtils";
 
 export const generateRemainingDiscardsConditionCode = (
   rules: Rule[],
+  itemType: string = "",
 ): string | null => {
   const condition = rules[0].conditionGroups[0].conditions[0];
   const operator = (condition.params?.operator?.value as string) || "equals";
-  const value = generateValueCode(condition.params?.value);
+  const value = generateValueCode(condition.params?.value, itemType);
 
   return generateOperationCode(
     operator,

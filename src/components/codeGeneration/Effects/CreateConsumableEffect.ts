@@ -6,6 +6,7 @@ export const generateCreateConsumableEffectCode = (
   effect: Effect,
   itemType: string,
   triggerType: string,
+  valueItemType: string = itemType,
 ): EffectReturn => {
   switch(itemType) {
     case "joker":
@@ -13,7 +14,7 @@ export const generateCreateConsumableEffectCode = (
     case "consumable":
       return generateConsumableCode(effect)
     case "card":
-      return generateCardCode(effect)
+      return generateCardCode(effect, valueItemType)
     case "deck":
       return generateDeckCode(effect)
 
@@ -272,13 +273,14 @@ const generateConsumableCode = (
 
 const generateCardCode = (
   effect: Effect,
+  itemType: string,
 ): EffectReturn => {
   const set = (effect.params?.set?.value as string) || "random";
   const specificCard = (effect.params?.specific_card?.value as string) || "random";
   const isNegative = (effect.params?.is_negativ?.value as string) === 'y';
   const customMessage = effect.customMessage;
   const isSoulable = effect.params?.soulable?.value as string === 'y';
-  const countCode = generateValueCode(effect.params?.count)
+  const countCode = generateValueCode(effect.params?.count, itemType)
   const ignoreSlots = effect.params?.ignore_slots?.value as string === 'y';
 
 

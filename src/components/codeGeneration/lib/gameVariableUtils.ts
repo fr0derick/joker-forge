@@ -26,6 +26,9 @@ export interface ConfigVariablesReturn {
   };
 }
 
+export const getCardExtraPath = (itemType?: string): string =>
+  itemType === "seal" ? "card.ability.seal.extra" : "card.ability.extra";
+
 export const parseGameVariable = (value: string): ParsedGameVariable => {
   const parts = value.replace("GAMEVAR:", "").split("|");
   const gameVariableId = parts[0];
@@ -73,9 +76,8 @@ export const generateValueCode = (
 
   const abilityPath = 
     (itemType === "deck") ? "back.ability.extra" : 
-    (itemType === "seal") ? "card.ability.seal.extra" : 
     (itemType === "edition") ? "card.ability.edition" : 
-    "card.ability.extra"
+    getCardExtraPath(itemType)
 
   if (item.valueType === "conflicted_user_var") {
     return `${item.value}_value`

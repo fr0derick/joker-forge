@@ -9,7 +9,7 @@ import type {
   VoucherData,
   DeckData
 } from "../../data/BalatroUtils";
-import { parseGameVariable } from "./gameVariableUtils";
+import { getCardExtraPath, parseGameVariable } from "./gameVariableUtils";
 import { getGameVariableById } from "../../data/GameVars";
 import {
   SUIT_VALUES,
@@ -63,7 +63,8 @@ export interface PokerHandVariableInfo {
 }
 
 export const coordinateVariableConflicts = (
-  effects: Effect[]
+  effects: Effect[],
+  itemType?: string,
 ): {
   preReturnCode?: string;
   modifiedEffects: Effect[];
@@ -132,7 +133,7 @@ export const coordinateVariableConflicts = (
   }
 
   const preReturnCode = conflictedVars
-    .map((varName) => `local ${varName}_value = card.ability.extra.${varName}`)
+    .map((varName) => `local ${varName}_value = ${getCardExtraPath(itemType)}.${varName}`)
     .join("\n                ");
 
   const modifiedEffects = effects.map((effect) => {
@@ -147,7 +148,7 @@ export const coordinateVariableConflicts = (
       if (conflictedVars.includes(varName)) {
         Object.entries(effect.params).forEach(([key, value]) => {
           if (value.value === varName) {
-            modifiedParams[key].valueType = "conflicted_user_var"
+            modifiedParams[key] = { ...value, valueType: "conflicted_user_var" }
           }
         });
       }

@@ -4,6 +4,7 @@ import { generateOperationCode } from "../lib/operationUtils";
 
 export const generateRemainingHandsConditionCode = (
   rules: Rule[],
+  itemType: string = "",
 ): string | null => {
   if (rules.length === 0) return "";
 
@@ -12,7 +13,7 @@ export const generateRemainingHandsConditionCode = (
   if (!condition || condition.type !== "remaining_hands") return "";
 
   const operator = (condition.params?.operator?.value as string) || "greater_than";
-  const valueCode = generateValueCode(condition.params?.value);
+  const valueCode = generateValueCode(condition.params?.value, itemType);
 
   return generateOperationCode(
     operator,

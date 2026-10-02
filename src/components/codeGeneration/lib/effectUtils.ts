@@ -193,7 +193,7 @@ export function generateEffectReturnStatement(
 
   if (regularEffects.length > 0) {
     const { preReturnCode: regularPreCode, modifiedEffects } =
-      coordinateVariableConflicts(regularEffects);
+      coordinateVariableConflicts(regularEffects, itemType);
 
     const effectReturns: EffectReturn[] = modifiedEffects
       .map((effect) => {
@@ -304,7 +304,7 @@ export function generateEffectReturnStatement(
 
     randomGroups.forEach((group, groupIndex) => {
       const { preReturnCode: groupPreCode, modifiedEffects } =
-        coordinateVariableConflicts(group.effects);
+        coordinateVariableConflicts(group.effects, itemType);
 
       const effectReturns: EffectReturn[] = modifiedEffects
         .map((effect) => {
@@ -563,7 +563,7 @@ export function generateEffectReturnStatement(
 
     loopGroups.forEach((group) => {
       const { preReturnCode: groupPreCode, modifiedEffects } =
-        coordinateVariableConflicts(group.effects);
+        coordinateVariableConflicts(group.effects, itemType);
 
       const effectReturns: EffectReturn[] = modifiedEffects
         .map((effect) => {
@@ -811,7 +811,7 @@ export const generateSingleEffect = (
     case "crash_game":
       return generateCrashGameEffectCode(effect)
     case "create_consumable":
-      return generateCreateConsumableEffectCode(effect, itemType, triggerType)
+      return generateCreateConsumableEffectCode(effect, itemType, triggerType, cleanItemType === "seal" ? "seal" : itemType)
     case "create_joker":
       return generateCreateJokerEffectCode(effect, itemType, triggerType)
     case "create_last_played_planet":

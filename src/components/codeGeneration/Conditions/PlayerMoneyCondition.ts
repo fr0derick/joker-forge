@@ -4,6 +4,7 @@ import { generateOperationCode } from "../lib/operationUtils";
 
 export const generatePlayerMoneyConditionCode = (
   rules: Rule[],
+  itemType: string = "",
 ): string | null => {
   if (rules.length === 0) return "";
 
@@ -12,7 +13,7 @@ export const generatePlayerMoneyConditionCode = (
   if (!condition || condition.type !== "player_money") return "";
 
   const operator = (condition.params?.operator?.value as string) || "greater_than";
-  const valueCode = generateValueCode(condition.params?.value, '');
+  const valueCode = generateValueCode(condition.params?.value, itemType);
 
   return generateOperationCode(
     operator,

@@ -4,10 +4,11 @@ import { generateOperationCode } from "../lib/operationUtils";
 
 export const generateHandSizeConditionCode = (
   rules: Rule[],
+  itemType: string = "",
 ):string | null => {
   const condition = rules[0].conditionGroups[0].conditions[0];
   const operator = (condition.params?.operator?.value as string) || "equals";
-  const value = generateValueCode(condition.params?.value) || "8";
+  const value = generateValueCode(condition.params?.value, itemType) || "8";
 
   return generateOperationCode(
     operator,

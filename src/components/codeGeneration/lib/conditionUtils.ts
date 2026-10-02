@@ -148,6 +148,8 @@ export const generateSingleConditionCode = (
   const itemType = (cleanItemType === "enhancement" || cleanItemType === "seal" || cleanItemType === "edition") 
     ? "card" : cleanItemType
 
+  const valueItemType = cleanItemType === "seal" ? "seal" : "card";
+
   const singleConditionRule = {
     ...rule,
     conditionGroups: [
@@ -160,7 +162,7 @@ export const generateSingleConditionCode = (
 
   switch (condition.type) {
     case "ante_level":
-      return generateAnteLevelConditionCode([singleConditionRule])
+      return generateAnteLevelConditionCode([singleConditionRule], valueItemType)
     case "blind_name":
       return generateBlindNameConditionCode([singleConditionRule])
     case "check_blind_requirements":
@@ -174,7 +176,7 @@ export const generateSingleConditionCode = (
     case "card_enhancement":
       return generateCardEnhancementConditionCode([singleConditionRule], itemType)
     case "card_index":
-      return generateCardIndexConditionCode([singleConditionRule], cleanItemType)
+      return generateCardIndexConditionCode([singleConditionRule], itemType, valueItemType)
     case "card_suit":
       return generateCardSuitConditionCode([singleConditionRule], itemType, joker)
     case "card_rank":
@@ -194,7 +196,7 @@ export const generateSingleConditionCode = (
     case "deck_count":
       return generateDeckCountConditionCode([singleConditionRule])
     case "deck_size":
-      return generateDeckSizeConditionCode([singleConditionRule])
+      return generateDeckSizeConditionCode([singleConditionRule], valueItemType)
     case "discarded_card_count":
       return generateDiscardedHandCountConditionCode([singleConditionRule], itemType)
     case "discarded_suit_count":
@@ -212,19 +214,19 @@ export const generateSingleConditionCode = (
     case "first_last_scored":
       return generateFirstLastScoredConditionCode([singleConditionRule], itemType, joker)
     case "generic_compare":
-      return generateGenericCompareConditionCode([singleConditionRule])
+      return generateGenericCompareConditionCode([singleConditionRule], valueItemType)
     case "glass_card_destroyed":
       return generateGlassCardDestroyedConditionCode()
     case "hand_count":
       return generateHandCountConditionCode([singleConditionRule])
     case "hand_level":
-      return generateHandLevelConditionCode([singleConditionRule])
+      return generateHandLevelConditionCode([singleConditionRule], valueItemType)
     case "hand_type":
       return generatePokerHandConditionCode([singleConditionRule], itemType, joker)
     case "hand_size":
-      return generateHandSizeConditionCode([singleConditionRule])
+      return generateHandSizeConditionCode([singleConditionRule], valueItemType)
     case "internal_variable":
-      return generateInternalVariableConditionCode([singleConditionRule])
+      return generateInternalVariableConditionCode([singleConditionRule], valueItemType)
     case "suit_variable":
       return generateSuitVariableConditionCode([singleConditionRule])
     case "rank_variable":
@@ -238,7 +240,7 @@ export const generateSingleConditionCode = (
     case "specific_joker":
       return generateOwnedJokerConditionCode([singleConditionRule], itemType)
     case "joker_count":
-      return generateJokerCountConditionCode([singleConditionRule])
+      return generateJokerCountConditionCode([singleConditionRule], valueItemType)
     case "joker_flipped":
       return generateJokerFlippedConditionCode(itemType, "other")
     case "this_joker_flipped":
@@ -264,7 +266,7 @@ export const generateSingleConditionCode = (
     case "lucky_card_triggered":
       return generateLuckyCardTriggeredConditionCode()
     case "player_money":
-      return generatePlayerMoneyConditionCode([singleConditionRule])
+      return generatePlayerMoneyConditionCode([singleConditionRule], valueItemType)
     case "poker_hand_been_played":
       return generatePokerHandBeenPlayedConditionCode()
     case "probability_identifier":
@@ -274,9 +276,9 @@ export const generateSingleConditionCode = (
     case "probability_succeeded":
       return generateProbabilitySucceededConditionCode([singleConditionRule])
     case "remaining_discards":
-      return generateRemainingDiscardsConditionCode([singleConditionRule])
+      return generateRemainingDiscardsConditionCode([singleConditionRule], valueItemType)
     case "remaining_hands":
-      return generateRemainingHandsConditionCode([singleConditionRule])
+      return generateRemainingHandsConditionCode([singleConditionRule], valueItemType)
     case "rank_count":
       return generateRankCountConditionCode([singleConditionRule], itemType)
     case "suit_count":

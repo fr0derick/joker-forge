@@ -377,7 +377,7 @@ const generateLocVarsFunction = (
     let currentIndex = 0;
     for (const variable of remainingVars) {
       if (currentIndex >= maxVariableIndex) break;
-      variableMapping.push(`card.ability.extra.${variable.name}`);
+      variableMapping.push(`${abilityPath}.${variable.name}`);
       currentIndex++;
     }
 

@@ -1,6 +1,6 @@
 import type { Effect } from "../../../ruleBuilder/types";
 import type { EffectReturn } from "../../lib/effectUtils";
-import { generateValueCode } from "../../lib/gameVariableUtils";
+import { generateValueCode, getCardExtraPath } from "../../lib/gameVariableUtils";
 
 export const generateModifyInternalVariableEffectCode = (
   effect: Effect,
@@ -12,6 +12,7 @@ export const generateModifyInternalVariableEffectCode = (
   const indexMethod = (effect.params?.index_method?.value as string) || "self"
 
   const valueCode = generateValueCode(effect.params?.value, itemType)
+  const abilityPath = getCardExtraPath(itemType);
 
   const customMessage = effect.customMessage;
 
@@ -27,51 +28,51 @@ export const generateModifyInternalVariableEffectCode = (
 
   switch (operation) {
     case "set":
-      operationCode = `card.ability.extra.${variableName} = ${valueCode}`;
+      operationCode = `${abilityPath}.${variableName} = ${valueCode}`;
       messageColor = "G.C.BLUE";
       break;
     case "increment":
-      operationCode = `card.ability.extra.${variableName} = (card.ability.extra.${variableName}) + ${valueCode}`;
+      operationCode = `${abilityPath}.${variableName} = (${abilityPath}.${variableName}) + ${valueCode}`;
       messageColor = "G.C.GREEN";
       break;
     case "decrement":
-      operationCode = `card.ability.extra.${variableName} = math.max(0, (card.ability.extra.${variableName}) - ${valueCode})`;
+      operationCode = `${abilityPath}.${variableName} = math.max(0, (${abilityPath}.${variableName}) - ${valueCode})`;
       messageColor = "G.C.RED";
       break;
     case "multiply":
-      operationCode = `card.ability.extra.${variableName} = (card.ability.extra.${variableName}) * ${valueCode}`;
+      operationCode = `${abilityPath}.${variableName} = (${abilityPath}.${variableName}) * ${valueCode}`;
       messageColor = "G.C.MULT";
       break;
     case "divide":
-      operationCode = `card.ability.extra.${variableName} = (card.ability.extra.${variableName}) / ${valueCode}`;
+      operationCode = `${abilityPath}.${variableName} = (${abilityPath}.${variableName}) / ${valueCode}`;
       messageColor = "G.C.MULT";
       break;
     case "power":
-      operationCode = `card.ability.extra.${variableName} = (card.ability.extra.${variableName}) ^ ${valueCode}`;
+      operationCode = `${abilityPath}.${variableName} = (${abilityPath}.${variableName}) ^ ${valueCode}`;
       messageColor = "G.C.BLUE";
       break;
     case "absolute":
-      operationCode = `card.ability.extra.${variableName} = math.abs(card.ability.extra.${variableName})`;
+      operationCode = `${abilityPath}.${variableName} = math.abs(${abilityPath}.${variableName})`;
       messageColor = "G.C.BLUE";
       break;
     case "natural_log":
-      operationCode = `card.ability.extra.${variableName} = math.log(card.ability.extra.${variableName})`;
+      operationCode = `${abilityPath}.${variableName} = math.log(${abilityPath}.${variableName})`;
       messageColor = "G.C.BLUE";
       break;
     case "log10":
-      operationCode = `card.ability.extra.${variableName} = math.log10(card.ability.extra.${variableName})`;
+      operationCode = `${abilityPath}.${variableName} = math.log10(${abilityPath}.${variableName})`;
       messageColor = "G.C.BLUE";
       break;
     case "square_root":
-      operationCode = `card.ability.extra.${variableName} = math.sqrt(card.ability.extra.${variableName})`;
+      operationCode = `${abilityPath}.${variableName} = math.sqrt(${abilityPath}.${variableName})`;
       messageColor = "G.C.BLUE";
       break;
     case "ceil":
-      operationCode = `card.ability.extra.${variableName} = math.ceil(card.ability.extra.${variableName})`;
+      operationCode = `${abilityPath}.${variableName} = math.ceil(${abilityPath}.${variableName})`;
       messageColor = "G.C.BLUE";
       break;
     case "floor":
-      operationCode = `card.ability.extra.${variableName} = math.floor(card.ability.extra.${variableName})`;
+      operationCode = `${abilityPath}.${variableName} = math.floor(${abilityPath}.${variableName})`;
       messageColor = "G.C.BLUE";
       break;
     case "index":
@@ -80,19 +81,19 @@ export const generateModifyInternalVariableEffectCode = (
           operationCode = `
           for i = 1, #G.jokers.cards do
             if G.jokers.cards[i] == card then
-                card.ability.extra.${variableName} = i
+                ${abilityPath}.${variableName} = i
                 break
             end
         end`;
           break
         case "random":
-          operationCode = `card.ability.extra.${variableName} = math.random(1, #G.jokers.cards)`
+          operationCode = `${abilityPath}.${variableName} = math.random(1, #G.jokers.cards)`
           break
         case "first":
-          operationCode = `card.ability.extra.${variableName} = 1`
+          operationCode = `${abilityPath}.${variableName} = 1`
           break
         case "last":
-          operationCode = `card.ability.extra.${variableName} = #G.jokers.cards`
+          operationCode = `${abilityPath}.${variableName} = #G.jokers.cards`
           break
         case "left":
           operationCode = `local my_pos = nil
@@ -102,7 +103,7 @@ export const generateModifyInternalVariableEffectCode = (
                 break
             end
         end
-        card.ability.extra.${variableName} = math.max(my_pos - 1, 0)
+        ${abilityPath}.${variableName} = math.max(my_pos - 1, 0)
         `
           break
         case "right":
@@ -116,25 +117,25 @@ export const generateModifyInternalVariableEffectCode = (
         if my_pos > #G.jokers.cards then 
           my_pos = -1
         end
-        card.ability.extra.${variableName} = my_pos + 1
+        ${abilityPath}.${variableName} = my_pos + 1
         `
           break
         case "key":
           operationCode = `local search_key = '${searchKey}'
-          card.ability.extra.${variableName} = 0
+          ${abilityPath}.${variableName} = 0
           for i = 1, #G.jokers.cards do
             if G.jokers.cards[i].config.center.key == search_key then
-                card.ability.extra.${variableName} = i
+                ${abilityPath}.${variableName} = i
                 break
             end
           end`
           break
         case "variable":
-          operationCode = `local search_key = card.ability.extra.${searchVar}
-          card.ability.extra.${variableName} = 0
+          operationCode = `local search_key = ${abilityPath}.${searchVar}
+          ${abilityPath}.${variableName} = 0
           for i = 1, #G.jokers.cards do
             if G.jokers.cards[i].config.center.key == search_key then
-                card.ability.extra.${variableName} = i
+                ${abilityPath}.${variableName} = i
                 break
             end
           end`
@@ -143,7 +144,7 @@ export const generateModifyInternalVariableEffectCode = (
           operationCode = `
           for i = 1, #G.jokers.cards do
             if G.jokers.cards[i] == G.jokers.highlighted[1] then
-                card.ability.extra.${variableName}= i
+                ${abilityPath}.${variableName}= i
                 break
             end
         end`
@@ -152,7 +153,7 @@ export const generateModifyInternalVariableEffectCode = (
           operationCode = `
           for i = 1, #G.jokers.cards do
             if G.jokers.cards[i] == context.other_joker then
-                card.ability.extra.${variableName}= i
+                ${abilityPath}.${variableName}= i
                 break
             end
         end`
@@ -160,7 +161,7 @@ export const generateModifyInternalVariableEffectCode = (
       }
     break
     default:
-      operationCode = `card.ability.extra.${variableName} = (card.ability.extra.${variableName}) + ${valueCode}`;
+      operationCode = `${abilityPath}.${variableName} = (${abilityPath}.${variableName}) + ${valueCode}`;
       messageColor = "G.C.GREEN";
   }
 

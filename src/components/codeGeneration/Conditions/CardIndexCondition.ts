@@ -4,12 +4,13 @@ import { generateValueCode } from "../lib/gameVariableUtils";
 export const generateCardIndexConditionCode = (
   rules: Rule[],
   itemType: string,
+  valueItemType: string = itemType,
 ):string | null => {
   const triggerType = rules[0].trigger || "card_scored";
   const condition = rules[0].conditionGroups[0].conditions[0];
   const indexType = (condition.params?.index_type?.value as string) || "number";
   const indexNumber =
-    generateValueCode(condition.params?.index_number, itemType) || "1";
+    generateValueCode(condition.params?.index_number, valueItemType) || "1";
 
   let cardValue = ''
   let handType = ''

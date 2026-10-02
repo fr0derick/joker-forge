@@ -4,11 +4,12 @@ import { generateOperationCode } from "../lib/operationUtils";
 
 export const generateDeckSizeConditionCode = (
   rules: Rule[],
+  itemType: string = "",
 ): string | null => {
   const condition = rules[0].conditionGroups[0].conditions[0];
   const sizeType = (condition.params?.size_type?.value as string) || "remaining";
   const operator = (condition.params?.operator?.value as string) || "equals";
-  const value = generateValueCode(condition.params?.value, '') || "52";
+  const value = generateValueCode(condition.params?.value, itemType) || "52";
 
   const deckSizeRef =
     sizeType === "remaining" ? "#G.deck.cards" : "#G.playing_cards";
